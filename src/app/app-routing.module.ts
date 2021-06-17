@@ -1,7 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'home' },
+  { path: 'home', component: HomeComponent },
+  { path: 'audio', loadChildren: () => import('./audio/audio.module').then(m => m.AudioModule) },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

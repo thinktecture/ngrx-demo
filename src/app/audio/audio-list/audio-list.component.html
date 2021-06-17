@@ -1,0 +1,16 @@
+<ul>
+  <li *ngFor="let audio of audios$ | async">
+    <input
+      type="text"
+      [ngModel]="audio.author"
+      (ngModelChange)="updateAudioAuthor(audio, $event)"
+    />
+    <input type="text" [ngModel]="audio.title" (ngModelChange)="updateAudioTitle(audio, $event)" />
+    Fav:
+    <input
+      type="checkbox"
+      [ngModel]="audio.isFavorite"
+      (ngModelChange)="updateAudioFavorite(audio, $event)"
+    />
+  </li>
+</ul>
