@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.side {
+  width: 15rem;
+  overflow: hidden;
+}
+
+.container {
+  flex: 1;
+}

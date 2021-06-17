@@ -1,8 +1,14 @@
-<h1>Store Example</h1>
+<mat-toolbar color="primary">
+  <span>Store Example</span>
+  <a mat-button [routerLink]="['home']">Home</a>
+  <a mat-button [routerLink]="['audio']">Audio</a>
+</mat-toolbar>
 
-<button [routerLink]="['home']">Home</button>
-<button [routerLink]="['audio']">Audio</button>
-
-<router-outlet></router-outlet>
-
-<app-favorite-list></app-favorite-list>
+<mat-drawer-container class="container">
+  <mat-drawer class="side" mode="side" opened>
+    <app-favorite-list></app-favorite-list>
+  </mat-drawer>
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>

@@ -1,0 +1,15 @@
+.item {
+  div {
+    flex: 1;
+  }
+
+  button {
+    display: none;
+  }
+
+  &:hover {
+    button {
+      display: block;
+    }
+  }
+}

@@ -15,7 +15,8 @@ export const selectAudioFavorites = createSelector(selectAudios, audios =>
 export const selectAudioFavoriteItems = createSelector(selectAudioFavorites, favorites => {
   const items: FavoriteItem[] = favorites.map(favorite => ({
     id: favorite.id,
-    caption: `${favorite.author} - ${favorite.title}`,
+    caption: `${favorite.title}`,
+    subCaption: `by ${favorite.author}`,
     toggleAction: toggleFavorite({ id: favorite.id }),
   }));
   return items;
