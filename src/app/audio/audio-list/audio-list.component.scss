@@ -1,0 +1,15 @@
+table {
+  width: 50rem;
+  margin: auto;
+
+  .mat-column-favorite {
+    width: 3rem;
+  }
+  .mat-column-actions {
+    width: 3rem;
+    text-align: right;
+  }
+  .mat-column-author {
+    width: 15rem;
+  }
+}

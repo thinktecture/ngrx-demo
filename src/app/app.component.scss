@@ -4,11 +4,15 @@
   height: 100%;
 }
 
-.side {
-  width: 15rem;
-  overflow: hidden;
-}
-
 .container {
   flex: 1;
+
+  .side {
+    width: 15rem;
+    overflow: hidden;
+  }
+
+  .content {
+    padding: 1rem;
+  }
 }

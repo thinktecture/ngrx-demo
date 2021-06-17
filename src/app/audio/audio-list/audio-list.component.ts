@@ -11,6 +11,8 @@ import { AudioListStore } from './audio-list.store';
   providers: [AudioListStore],
 })
 export class AudioListComponent implements OnInit {
+  readonly columns = ['favorite', 'title', 'author', 'actions'];
+
   readonly audios$ = this.audioListStore.audios$;
 
   constructor(private audioListStore: AudioListStore, private store: Store) {}
