@@ -7,8 +7,10 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AudioModule } from './audio/audio.module';
 import { AudioState } from './audio/state/audio.reducer';
 import { AUDIO_STATE } from './audio/state/audio.selectors';
+import { FavoritesModule } from './favorites/favorites.module';
 import { HomeComponent } from './home/home.component';
 
 export interface AppState {
@@ -19,6 +21,8 @@ export interface AppState {
   declarations: [AppComponent, HomeComponent],
   imports: [
     BrowserModule,
+    AudioModule,
+    FavoritesModule,
     AppRoutingModule,
     StoreModule.forRoot({}),
     BrowserAnimationsModule,

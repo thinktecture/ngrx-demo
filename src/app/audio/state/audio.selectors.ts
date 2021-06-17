@@ -1,4 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { FavoriteItem } from '../../favorites/favorite-list/favorite-item.model';
+import { toggleFavorite } from './audio.actions';
 import { AudioState } from './audio.reducer';
 
 export const AUDIO_STATE = 'audio';
@@ -9,3 +11,12 @@ export const selectAudios = createSelector(selectAudio, ({ audios }) => audios);
 export const selectAudioFavorites = createSelector(selectAudios, audios =>
   audios.filter(({ isFavorite }) => isFavorite),
 );
+
+export const selectAudioFavoriteItems = createSelector(selectAudioFavorites, favorites => {
+  const items: FavoriteItem[] = favorites.map(favorite => ({
+    id: favorite.id,
+    caption: `${favorite.author} - ${favorite.title}`,
+    toggleAction: toggleFavorite({ id: favorite.id }),
+  }));
+  return items;
+});

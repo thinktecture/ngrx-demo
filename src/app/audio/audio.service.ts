@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Audio } from './audio.model';
 
 let AUDIO_MOCK: Audio[] = [
@@ -11,6 +11,14 @@ let AUDIO_MOCK: Audio[] = [
 export class AudioService {
   load(): Observable<Audio[]> {
     return of(AUDIO_MOCK);
+  }
+
+  toggleFavorite(id: string): Observable<Audio> {
+    const foundAudio = AUDIO_MOCK.find(audio => audio.id === id);
+    if (!foundAudio) {
+      return throwError(`[AudioService] Cannot toggle. No audio for id ${id}`);
+    }
+    return this.update({ ...foundAudio, isFavorite: !foundAudio.isFavorite });
   }
 
   update(updated: Audio): Observable<Audio> {

@@ -6,6 +6,7 @@ import { AudioService } from '../audio.service';
 import {
   loadAudioFavorites,
   loadAudioFavoritesSuccess,
+  toggleFavorite,
   updateAudio,
   updateAudioSuccess,
 } from './audio.actions';
@@ -24,6 +25,14 @@ export class AudioEffects implements OnInitEffects {
     this.actions$.pipe(
       ofType(updateAudio),
       switchMap(({ audio }) => this.audioService.update(audio)),
+      map(audio => updateAudioSuccess({ audio })),
+    ),
+  );
+
+  readonly toggleFavorite$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(toggleFavorite),
+      switchMap(({ id }) => this.audioService.toggleFavorite(id)),
       map(audio => updateAudioSuccess({ audio })),
     ),
   );

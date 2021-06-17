@@ -1,0 +1,5 @@
+<ul>
+  <li *ngFor="let favorite of favorites$ | async">
+    {{ favorite.caption }} <button (click)="toggle(favorite)">x</button>
+  </li>
+</ul>
