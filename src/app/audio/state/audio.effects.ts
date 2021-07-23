@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AudioService } from '../audio.service';
 import {
   loadAudioFavorites,
@@ -24,9 +25,23 @@ export class AudioEffects implements OnInitEffects {
   readonly updateAudio$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateAudio),
-      switchMap(({ audio }) => this.audioService.update(audio)),
-      map(audio => updateAudioSuccess({ audio })),
+      switchMap(({ audio, redirect }) => {
+        return this.audioService.update(audio).pipe(map(updated => ({ audio: updated, redirect })));
+      }),
+      map(data => updateAudioSuccess(data)),
     ),
+  );
+
+  readonly updateSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(updateAudioSuccess),
+        filter(({ redirect }) => !!redirect),
+        tap(({ redirect }) => {
+          this.router.navigate(redirect);
+        }),
+      ),
+    { dispatch: false },
   );
 
   readonly toggleFavorite$ = createEffect(() =>
@@ -37,7 +52,11 @@ export class AudioEffects implements OnInitEffects {
     ),
   );
 
-  constructor(private actions$: Actions, private audioService: AudioService) {}
+  constructor(
+    private actions$: Actions,
+    private audioService: AudioService,
+    private router: Router,
+  ) {}
 
   ngrxOnInitEffects(): Action {
     return loadAudioFavorites();

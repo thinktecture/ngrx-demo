@@ -13,6 +13,14 @@ export class AudioService {
     return of(AUDIO_MOCK);
   }
 
+  byId(id: string): Observable<Audio> {
+    const foundAudio = AUDIO_MOCK.find(audio => audio.id === id);
+    if (!foundAudio) {
+      return throwError(`[AudioService] No audio for id ${id}`);
+    }
+    return of(foundAudio);
+  }
+
   toggleFavorite(id: string): Observable<Audio> {
     const foundAudio = AUDIO_MOCK.find(audio => audio.id === id);
     if (!foundAudio) {

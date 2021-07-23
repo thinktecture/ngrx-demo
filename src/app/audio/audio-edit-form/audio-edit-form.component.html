@@ -1,0 +1,18 @@
+<form [formGroup]="form">
+  <mat-form-field appearance="fill">
+    <mat-label>Input</mat-label>
+    <input matInput formControlName="author" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Input</mat-label>
+    <input matInput formControlName="title" />
+  </mat-form-field>
+
+  <mat-checkbox matInput formControlName="isFavorite">Favorite</mat-checkbox>
+
+  <div class="buttons">
+    <span class="spacer"></span>
+    <button mat-button (click)="submit()">Save</button>
+  </div>
+</form>
