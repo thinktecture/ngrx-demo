@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
 import { createSelector, Store } from '@ngrx/store';
 import { selectAudioFavoriteItems } from '../../audio/state/audio.selectors';
+import { selectBookFavoriteItems } from '../../book/state/book.selectors';
 import { FavoriteItem } from './favorite-item.model';
 
-const selectFavorites = createSelector(selectAudioFavoriteItems, items => {
-  return items.sort((a, b) => a.id.localeCompare(b.id));
-});
+const selectFavorites = createSelector(
+  selectAudioFavoriteItems,
+  selectBookFavoriteItems,
+  (audios, books) => {
+    return [...audios, ...books].sort((a, b) => a.id.localeCompare(b.id));
+  },
+);
 
 @Component({
   selector: 'app-favorite-list',

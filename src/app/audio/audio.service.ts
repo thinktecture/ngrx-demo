@@ -3,8 +3,8 @@ import { Observable, of, throwError } from 'rxjs';
 import { Audio } from './audio.model';
 
 let AUDIO_MOCK: Audio[] = [
-  { id: 'audio-1', title: 'The First Song', author: 'YB', isFavorite: true },
-  { id: 'audio-2', title: 'Better Song', author: 'TT', isFavorite: false },
+  { id: 'audio-1', title: 'The First Song', writer: 'YB', isFavorite: true },
+  { id: 'audio-2', title: 'Better Song', writer: 'TT', isFavorite: false },
 ];
 
 @Injectable({ providedIn: 'root' })

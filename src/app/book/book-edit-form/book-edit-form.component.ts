@@ -1,20 +1,20 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Audio } from '../audio.model';
+import { Book } from '../book.model';
 
 @Component({
-  selector: 'app-audio-edit-form',
-  templateUrl: './audio-edit-form.component.html',
-  styleUrls: ['./audio-edit-form.component.scss'],
+  selector: 'app-book-edit-form',
+  templateUrl: './book-edit-form.component.html',
+  styleUrls: ['./book-edit-form.component.scss'],
 })
-export class AudioEditFormComponent implements OnChanges {
-  @Input() data?: Audio | null;
+export class BookEditFormComponent implements OnChanges {
+  @Input() data?: Book | null;
   @Input() loading: boolean | null = false;
 
-  @Output() dataSubmit = new EventEmitter<Audio>();
+  @Output() dataSubmit = new EventEmitter<Book>();
 
   readonly form = this.formBuilder.group({
-    writer: ['', Validators.required],
+    author: ['', Validators.required],
     title: ['', Validators.required],
     isFavorite: false,
   });
@@ -34,7 +34,7 @@ export class AudioEditFormComponent implements OnChanges {
     }
   }
 
-  private fillForm(value?: Audio): void {
+  private fillForm(value?: Book): void {
     if (value) {
       this.form.patchValue(value);
     } else {

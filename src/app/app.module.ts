@@ -14,6 +14,7 @@ import { AppComponent } from './app.component';
 import { AudioModule } from './audio/audio.module';
 import { AudioState } from './audio/state/audio.reducer';
 import { AUDIO_STATE } from './audio/state/audio.selectors';
+import { BookModule } from './book/book.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { HomeComponent } from './home/home.component';
 
@@ -30,6 +31,7 @@ export interface AppState {
     MatButtonModule,
     MatSidenavModule,
     AudioModule,
+    BookModule,
     FavoritesModule,
     AppRoutingModule,
     StoreModule.forRoot({}),

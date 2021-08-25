@@ -1,0 +1,9 @@
+<mat-card>
+  <h3>Edit Book</h3>
+  <app-book-edit-form
+    *ngIf="!(loading$ | async); else loading"
+    [data]="book$ | async"
+    (dataSubmit)="save($event)"
+  ></app-book-edit-form>
+</mat-card>
+<ng-template #loading>Loading</ng-template>

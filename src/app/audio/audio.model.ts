@@ -2,7 +2,12 @@ export interface Audio {
   id: string;
 
   title: string;
-  author: string;
+  writer: string;
+
+  album?: {
+    title: string;
+    trackNo: number;
+  };
 
   isFavorite: boolean;
 }
