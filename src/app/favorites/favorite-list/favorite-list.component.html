@@ -1,5 +1,5 @@
 <mat-list>
-  <div mat-subheader>Favorites</div>
+  <div mat-subheader>Favorites (<app-favorite-count></app-favorite-count>)</div>
   <mat-list-item *ngFor="let favorite of favorites$ | async" class="item">
     <div mat-line>{{ favorite.caption }}</div>
     <div mat-line *ngIf="favorite.subCaption">{{ favorite.subCaption }}</div>

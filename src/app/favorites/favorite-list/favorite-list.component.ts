@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { createSelector, Store } from '@ngrx/store';
 import { selectAudioFavoriteItems } from '../../audio/state/audio.selectors';
 import { selectBookFavoriteItems } from '../../book/state/book.selectors';
@@ -12,10 +12,13 @@ const selectFavorites = createSelector(
   },
 );
 
+export const selectFavoriteCount = createSelector(selectFavorites, favorites => favorites.length);
+
 @Component({
   selector: 'app-favorite-list',
   templateUrl: './favorite-list.component.html',
   styleUrls: ['./favorite-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FavoriteListComponent {
   readonly favorites$ = this.store.select(selectFavorites);
