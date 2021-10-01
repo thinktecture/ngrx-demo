@@ -1,22 +1,28 @@
 import { createReducer, on } from '@ngrx/store';
 import { Audio } from '../audio.model';
-import { loadAudioFavoritesSuccess, updateAudioSuccess } from './audio.actions';
+import { addAudioFavorite, removeAudioFavorite } from './audio.actions';
 
 export interface AudioState {
-  audios: Audio[];
+  favorites: Audio[];
 }
 
 export const initialAudioState: AudioState = {
-  audios: [],
+  favorites: [],
 };
 
 export const audioReducer = createReducer(
+  // Provide initial state of the store
   initialAudioState,
-  on(loadAudioFavoritesSuccess, (state, { favorites }) => {
-    return { ...state, audios: favorites };
+
+  // Add audio to favorite array
+  on(addAudioFavorite, (state, { audio }) => {
+    const favorites = state.favorites.filter(({ id }) => audio.id !== id).concat(audio);
+    return { ...state, favorites };
   }),
-  on(updateAudioSuccess, (state, { audio }) => {
-    const audios = state.audios.filter(favorite => favorite.id !== audio.id).concat(audio);
-    return { ...state, audios };
+
+  // Remove audio from favorite array
+  on(removeAudioFavorite, (state, { audio }) => {
+    const favorites = state.favorites.filter(({ id }) => audio.id !== id);
+    return { ...state, favorites };
   }),
 );

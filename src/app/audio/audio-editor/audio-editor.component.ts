@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { Audio } from '../audio.model';
-import { updateAudio } from '../state/audio.actions';
 import { AudioEditorStore } from './audio-editor.store';
 
 @Component({
@@ -28,6 +27,6 @@ export class AudioEditorComponent implements OnInit {
   }
 
   save(audio: Audio): void {
-    this.store.dispatch(updateAudio({ audio, redirect: ['audio'] }));
+    // this.store.dispatch(updateAudio({ audio, redirect: ['audio'] }));
   }
 }

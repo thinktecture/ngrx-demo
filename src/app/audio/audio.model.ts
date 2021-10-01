@@ -3,6 +3,4 @@ export interface Audio {
 
   title: string;
   author: string;
-
-  isFavorite: boolean;
 }

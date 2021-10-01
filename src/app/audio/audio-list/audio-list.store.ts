@@ -3,9 +3,10 @@ import { ComponentStore } from '@ngrx/component-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
+import { Favoritable } from 'src/app/favorites/favoritable.model';
 import { Audio } from '../audio.model';
 import { AudioService } from '../audio.service';
-import { selectAudios } from '../state/audio.selectors';
+import { selectAudioFavoriteIds } from '../state/audio.selectors';
 
 export interface AudioListState {
   audios: Audio[];
@@ -13,19 +14,29 @@ export interface AudioListState {
 
 @Injectable()
 export class AudioListStore extends ComponentStore<AudioListState> {
+  readonly audios$ = this.select(({ audios }) => audios);
+
+  readonly setAudios = this.updater((state, audios: Audio[]) => ({ ...state, audios }));
+
   readonly load = this.effect((load$: Observable<void>) =>
     load$.pipe(
       switchMap(() => this.audioService.load()),
-      tap(audios => {
-        this.patchState({ audios });
-      }),
+      tap(audios => this.setAudios(audios)),
     ),
   );
 
-  readonly audios$ = this.select(this.state$, this.store.select(selectAudios), (state, audios) => {
-    const audioMap = new Map<string, Audio>(audios.map(audio => [audio.id, audio]));
-    return state.audios.map(audio => audioMap.get(audio.id) ?? audio);
-  });
+  // View Model Selector
+  readonly audioList$ = this.select(
+    this.audios$,
+    this.store.select(selectAudioFavoriteIds),
+    (audios, favoriteIds) => {
+      const favoritableAudios: (Audio & Favoritable)[] = audios.map(audio => ({
+        ...audio,
+        isFavorite: !!favoriteIds.includes(audio.id),
+      }));
+      return favoritableAudios;
+    },
+  );
 
   constructor(private store: Store, private audioService: AudioService) {
     super({ audios: [] });

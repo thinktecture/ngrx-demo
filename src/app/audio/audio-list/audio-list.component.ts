@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Favoritable } from 'src/app/favorites/favoritable.model';
 import { Audio } from '../audio.model';
-import { updateAudio } from '../state/audio.actions';
+import { addAudioFavorite, removeAudioFavorite } from '../state/audio.actions';
 import { AudioListStore } from './audio-list.store';
 
 @Component({
@@ -11,9 +12,9 @@ import { AudioListStore } from './audio-list.store';
   providers: [AudioListStore],
 })
 export class AudioListComponent implements OnInit {
-  readonly columns = ['favorite', 'title', 'author', 'actions'];
+  readonly columns = ['favorite', 'title', 'author'];
 
-  readonly audios$ = this.audioListStore.audios$;
+  readonly audioList$ = this.audioListStore.audioList$;
 
   constructor(private audioListStore: AudioListStore, private store: Store) {}
 
@@ -21,24 +22,11 @@ export class AudioListComponent implements OnInit {
     this.audioListStore.load();
   }
 
-  updateAudio(audio: Audio): void {
-    this.store.dispatch(updateAudio({ audio }));
-  }
+  toggleFavorite(favoritableAudio: Audio & Favoritable): void {
+    const { isFavorite, ...audio } = favoritableAudio;
 
-  updateAudioAuthor(audio: Audio, author: string): void {
-    this.store.dispatch(updateAudio({ audio: { ...audio, author } }));
-  }
+    const action = isFavorite ? removeAudioFavorite : addAudioFavorite;
 
-  updateAudioTitle(audio: Audio, title: string): void {
-    this.store.dispatch(updateAudio({ audio: { ...audio, title } }));
-  }
-
-  updateAudioFavorite(audio: Audio, isFavorite: boolean): void {
-    this.store.dispatch(updateAudio({ audio: { ...audio, isFavorite } }));
-  }
-
-  toggleFavorite(audio: Audio): void {
-    const updated = { ...audio, isFavorite: !audio.isFavorite };
-    this.store.dispatch(updateAudio({ audio: updated }));
+    this.store.dispatch(action({ audio }));
   }
 }
