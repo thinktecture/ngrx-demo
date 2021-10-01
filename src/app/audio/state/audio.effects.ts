@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
-import { map, mapTo, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, map, mapTo, switchMap } from 'rxjs/operators';
 import { AudioService } from '../audio.service';
 import {
   addAudioFavorite,
@@ -26,7 +27,10 @@ export class AudioEffects implements OnInitEffects {
     this.actions$.pipe(
       ofType(addAudioFavorite),
       switchMap(({ audio }) => {
-        return this.audioService.addFavorite(audio).pipe(mapTo(addAudioFavoriteSuccess({ audio })));
+        return this.audioService.addFavorite(audio).pipe(
+          mapTo(addAudioFavoriteSuccess({ audio })),
+          catchError(() => of(removeAudioFavorite({ audio }))),
+        );
       }),
     ),
   );
@@ -35,9 +39,10 @@ export class AudioEffects implements OnInitEffects {
     this.actions$.pipe(
       ofType(removeAudioFavorite),
       switchMap(({ audio }) => {
-        return this.audioService
-          .removeFavorite(audio)
-          .pipe(mapTo(removeAudioFavoriteSuccess({ audio })));
+        return this.audioService.removeFavorite(audio).pipe(
+          mapTo(removeAudioFavoriteSuccess({ audio })),
+          catchError(() => of(addAudioFavorite({ audio }))),
+        );
       }),
     ),
   );
