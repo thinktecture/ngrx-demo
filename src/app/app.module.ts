@@ -16,6 +16,7 @@ import { AudioState } from './audio/state/audio.reducer';
 import { AUDIO_STATE } from './audio/state/audio.selectors';
 import { FavoritesModule } from './favorites/favorites.module';
 import { HomeComponent } from './home/home.component';
+import { TodoModule } from './todo/todo.module';
 
 export interface AppState {
   [AUDIO_STATE]: AudioState;
@@ -30,6 +31,7 @@ export interface AppState {
     MatButtonModule,
     MatSidenavModule,
     AudioModule,
+    TodoModule,
     FavoritesModule,
     AppRoutingModule,
     StoreModule.forRoot({}),

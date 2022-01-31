@@ -1,0 +1,48 @@
+:host > div {
+  width: 500px;
+  margin: auto;
+}
+
+table {
+  width: 100%;
+  margin: auto;
+
+  .mat-column-done {
+    width: 3rem;
+    cursor: pointer;
+  }
+
+  .mat-column-content {
+  }
+}
+
+.content-container {
+  font-size: 16px;
+  display: flex;
+
+  .content {
+    flex: 1;
+    display: block;
+    height: 20px;
+    padding: 7px;
+    cursor: text;
+  }
+}
+
+input {
+  flex: 1;
+
+  font-size: 16px;
+  padding: 5px;
+  outline: none;
+  border: 2px dashed lightgray;
+}
+
+.button-row {
+  display: flex;
+  margin-top: 1rem;
+
+  .spacer {
+    flex: 1;
+  }
+}
