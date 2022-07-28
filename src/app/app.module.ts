@@ -16,6 +16,7 @@ import { AudioState } from './audio/state/audio.reducer';
 import { AUDIO_STATE } from './audio/state/audio.selectors';
 import { FavoritesModule } from './favorites/favorites.module';
 import { HomeComponent } from './home/home.component';
+import { NotificationModule } from './notification/notification.module';
 import { TodoModule } from './todo/todo.module';
 
 export interface AppState {
@@ -33,6 +34,7 @@ export interface AppState {
     AudioModule,
     TodoModule,
     FavoritesModule,
+    NotificationModule,
     AppRoutingModule,
     StoreModule.forRoot({}),
     BrowserAnimationsModule,

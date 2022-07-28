@@ -1,0 +1,23 @@
+<ng-container *ngIf="notifications$ | async as notifications">
+  <mat-list *ngIf="notifications.length; else empty">
+    <div mat-subheader>
+      Messages (Unseen: {{ unseenCount$ | async }})
+      <button mat-button (click)="seen()">Mark As Seen</button>
+    </div>
+
+    <mat-list-item
+      *ngFor="let notification of notifications"
+      (click)="delete(notification.id)"
+      [class.unseen]="!notification.seen"
+    >
+      <div mat-line>{{ notification.text }}</div>
+      <div mat-line>
+        <ng-container *ngIf="notification.reference">[{{ notification.reference }}]</ng-container>
+      </div>
+    </mat-list-item>
+  </mat-list>
+</ng-container>
+
+<ng-template #empty>
+  <p>There are currently no notifications :)</p>
+</ng-template>

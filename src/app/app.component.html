@@ -3,13 +3,25 @@
   <a mat-button [routerLink]="['home']">Home</a>
   <a mat-button [routerLink]="['audio']">Audio</a>
   <a mat-button [routerLink]="['todo']">Todo</a>
+  <a mat-button [routerLink]="['notification']">Notification</a>
+
+  <span class="spacer"></span>
+
+  <button mat-icon-button (click)="notificationsOpen = !notificationsOpen">
+    <mat-icon>{{ $any(unseenCount$ | async) > 0 ? 'mark_email_unread' : 'mail' }}</mat-icon>
+  </button>
 </mat-toolbar>
 
 <mat-drawer-container class="container">
-  <mat-drawer class="side" mode="side" opened>
+  <mat-drawer class="favorites" mode="side" opened>
     <app-favorite-list></app-favorite-list>
   </mat-drawer>
+
   <mat-drawer-content class="content">
     <router-outlet></router-outlet>
   </mat-drawer-content>
+
+  <mat-drawer class="notifications" mode="side" [opened]="notificationsOpen" position="end">
+    <app-notifications></app-notifications>
+  </mat-drawer>
 </mat-drawer-container>

@@ -4,11 +4,20 @@
   height: 100%;
 }
 
+.spacer {
+  flex: 1 1 auto;
+}
+
 .container {
   flex: 1;
 
-  .side {
+  .favorites {
     width: 15rem;
+    overflow: hidden;
+  }
+
+  .notifications {
+    width: 25rem;
     overflow: hidden;
   }
 

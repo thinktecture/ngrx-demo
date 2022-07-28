@@ -1,0 +1,37 @@
+<div>
+  <h2>Notification</h2>
+  <mat-card>
+    <p>
+      <button mat-raised-button color="primary" (click)="addNotification()">
+        Add a Notification
+      </button>
+    </p>
+  </mat-card>
+</div>
+<div>
+  <h2>Updatable Notification</h2>
+  <mat-card>
+    <p>
+      <mat-form-field>
+        <mat-label>Text</mat-label>
+        <input #input matInput />
+      </mat-form-field>
+
+      <button
+        *ngIf="(addedUpdatable$ | async) === false; else update"
+        color="primary"
+        mat-raised-button
+        (click)="addUpdatableNotification(input.value)"
+      >
+        Add Updatable Notification
+      </button>
+
+      <ng-template #update>
+        <button mat-raised-button color="primary" (click)="updateNotification(input.value)">
+          Update Notification
+        </button>
+        <button mat-raised-button color="warn" (click)="delete()">Delete</button>
+      </ng-template>
+    </p>
+  </mat-card>
+</div>
