@@ -14,6 +14,8 @@ interface TodoListState {
   editing?: string;
 }
 
+const initialState: TodoListState = { id: '', title: '', items: [], loading: true };
+
 @Injectable()
 export class TodoListStore extends ComponentStore<TodoListState> {
   // Default Selectors
@@ -28,7 +30,7 @@ export class TodoListStore extends ComponentStore<TodoListState> {
     this.items$,
     this.loading$,
     this.editing$,
-    (items, editing, loading) => {
+    (items, loading, editing) => {
       return loading || editing || (items.length > 0 && items[items.length - 1].content === '');
     },
   );
@@ -36,6 +38,16 @@ export class TodoListStore extends ComponentStore<TodoListState> {
   // Updaters
   private readonly setList = this.updater((state, list: TodoList) => {
     return { ...state, ...list, loading: false, editing: undefined };
+  });
+
+  private readonly addOne = this.updater((state, item: TodoListItem) => {
+    const items = state.items.concat(item);
+    return { ...state, items, editing: item.id, loading: false };
+  });
+
+  private readonly replaceItem = this.updater((state, updated: TodoListItem) => {
+    const items = state.items.map(item => (item.id === updated.id ? updated : item));
+    return { ...state, items, loading: false };
   });
 
   readonly editItem = this.updater((state, id: string | undefined) => {
@@ -65,10 +77,7 @@ export class TodoListStore extends ComponentStore<TodoListState> {
 
         return this.todoService.addItem(state.id, '').pipe(
           tapResponse(
-            item => {
-              const items = state.items.concat(item);
-              this.patchState({ items, editing: item.id, loading: false });
-            },
+            item => this.addOne(item),
             () => this.patchState({ loading: false }),
           ),
         );
@@ -86,8 +95,7 @@ export class TodoListStore extends ComponentStore<TodoListState> {
           return this.todoService.updateItem(state.id, id, update).pipe(
             tapResponse(
               updated => {
-                const items = state.items.map(item => (item.id === id ? updated : item));
-                this.patchState({ items, loading: false });
+                this.replaceItem(updated);
               },
               () => this.patchState({ loading: false }),
             ),
@@ -97,6 +105,6 @@ export class TodoListStore extends ComponentStore<TodoListState> {
   );
 
   constructor(private todoService: TodoService) {
-    super({ id: '', title: '', items: [], loading: true });
+    super(initialState);
   }
 }

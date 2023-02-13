@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -21,18 +20,17 @@ import { AUDIO_STATE } from './state/audio.selectors';
 @NgModule({
   declarations: [AudioListComponent, AudioEditorComponent, AudioEditFormComponent],
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatTableModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatCheckboxModule,
-    MatInputModule,
-    MatIconModule,
-    MatCardModule,
     AudioRoutingModule,
-    StoreModule.forFeature(AUDIO_STATE, audioReducer),
+    CommonModule,
     EffectsModule.forFeature([AudioEffects]),
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatTableModule,
+    ReactiveFormsModule,
+    StoreModule.forFeature(AUDIO_STATE, audioReducer),
   ],
 })
 export class AudioModule {}

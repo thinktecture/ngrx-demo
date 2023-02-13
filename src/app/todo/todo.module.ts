@@ -13,12 +13,12 @@ import { TodoComponent } from './todo/todo.component';
   declarations: [TodoComponent, TodoListComponent],
   imports: [
     CommonModule,
-    TodoRoutingModule,
-    MatTableModule,
+    MatButtonModule,
+    MatCardModule,
     MatIconModule,
     MatListModule,
-    MatCardModule,
-    MatButtonModule,
+    MatTableModule,
+    TodoRoutingModule,
   ],
 })
 export class TodoModule {}

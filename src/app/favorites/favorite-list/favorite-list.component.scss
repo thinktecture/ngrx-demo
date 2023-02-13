@@ -1,10 +1,11 @@
 .item {
-  div {
-    flex: 1;
-  }
+  position: relative;
 
   button {
     display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 
   &:hover {

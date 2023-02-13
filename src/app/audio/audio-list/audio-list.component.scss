@@ -1,6 +1,7 @@
 table {
-  width: 500px;
-  margin: auto;
+  .mat-column-title {
+    width: 12rem;
+  }
 
   .mat-column-favorite {
     width: 3rem;
@@ -9,9 +10,5 @@ table {
   .mat-column-actions {
     width: 3rem;
     text-align: right;
-  }
-
-  .mat-column-author {
-    width: 15rem;
   }
 }

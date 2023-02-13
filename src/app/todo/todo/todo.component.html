@@ -2,9 +2,9 @@
   <h2>Todo Lists</h2>
   <mat-card>
     <mat-nav-list>
-      <mat-list-item *ngFor="let list of todoLists$ | async" [routerLink]="[list.id]">{{
-        list.title
-      }}</mat-list-item>
+      <mat-list-item *ngFor="let list of todoLists$ | async" [routerLink]="[list.id]">
+        {{ list.title }}
+      </mat-list-item>
     </mat-nav-list>
   </mat-card>
 </div>

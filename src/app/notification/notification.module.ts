@@ -15,13 +15,13 @@ import { notificationsReducer, NOTIFICATION_STATE } from './state/notification.r
   declarations: [NotificationsComponent, NotificationDemoComponent],
   imports: [
     CommonModule,
-    MatListModule,
-    MatIconModule,
     MatButtonModule,
-    MatInputModule,
     MatCardModule,
-    StoreModule.forFeature(NOTIFICATION_STATE, notificationsReducer),
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
     NotificationRoutingModule,
+    StoreModule.forFeature(NOTIFICATION_STATE, notificationsReducer),
   ],
   exports: [NotificationsComponent],
 })

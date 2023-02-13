@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Audio } from '../audio.model';
 
 @Component({
@@ -19,7 +19,7 @@ export class AudioEditFormComponent implements OnChanges {
     isFavorite: false,
   });
 
-  constructor(private readonly formBuilder: FormBuilder) {}
+  constructor(private readonly formBuilder: UntypedFormBuilder) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data) {
