@@ -1,49 +1,124 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { EMPTY, Subject } from 'rxjs';
+import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
 import { TodoListItem } from '../todo.model';
-import { TodoListStore } from './todo-list.store';
+import { TodoService } from '../todo.service';
 
 @Component({
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TodoListStore],
 })
 export class TodoListComponent {
   readonly columns = ['done', 'content'];
 
-  readonly title$ = this.todoListStore.title$;
-  readonly items$ = this.todoListStore.items$;
-  readonly editing$ = this.todoListStore.editing$;
+  id = '';
+  title = '';
+  items: TodoListItem[] = [];
 
-  readonly addDisabled$ = this.todoListStore.addDisabled$;
+  loading = false;
+  editing?: string;
 
-  constructor(private route: ActivatedRoute, private todoListStore: TodoListStore) {}
+  addDisabled = true;
+
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private route: ActivatedRoute,
+    private todoService: TodoService,
+    private changeDetectorRef: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
-    const id$ = this.route.paramMap.pipe(map(params => params.get('id') ?? ''));
+    this.route.paramMap
+      .pipe(
+        map(params => params.get('id') ?? ''),
+        switchMap(id => {
+          this.loading = true;
+          this.changeDetectorRef.markForCheck();
 
-    this.todoListStore.loadList(id$);
+          return this.todoService.getList(id);
+        }),
+        catchError(() => {
+          this.loading = false;
+          this.changeDetectorRef.markForCheck();
+
+          return EMPTY;
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(({ id, title, items }) => {
+        this.id = id;
+        this.title = title;
+        this.items = items;
+        this.editing = undefined;
+        this.loading = false;
+
+        this.changeDetectorRef.markForCheck();
+      });
   }
 
   addEmpty(): void {
-    this.todoListStore.addItem();
+    if (this.loading) {
+      return;
+    }
+
+    this.loading = true;
+
+    this.todoService
+      .addItem(this.id, '')
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.changeDetectorRef.markForCheck();
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(item => {
+        this.items = [...this.items, item];
+      });
   }
 
   setDone(item: TodoListItem, done: boolean): void {
-    this.todoListStore.updateItem({ id: item.id, update: { done } });
+    this.updateItem(item, { done });
   }
 
   setContent(item: TodoListItem, content: string): void {
-    this.todoListStore.updateItem({ id: item.id, update: { content } });
+    this.updateItem(item, { content });
+  }
+
+  private updateItem(item: TodoListItem, update: Partial<TodoListItem>): void {
+    if (this.loading) {
+      return;
+    }
+
+    this.loading = true;
+
+    this.todoService
+      .updateItem(this.id, item.id, update)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.editing = undefined;
+          this.changeDetectorRef.markForCheck();
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(updated => {
+        this.items = this.items.map(item => (item.id === updated.id ? updated : item));
+      });
   }
 
   edit(id?: string): void {
-    this.todoListStore.editItem(id);
+    this.editing = id;
   }
 
   cancelEdit(): void {
-    this.todoListStore.editItem(undefined);
+    this.editing = undefined;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
   }
 }
