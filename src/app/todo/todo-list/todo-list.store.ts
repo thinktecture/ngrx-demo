@@ -1,27 +1,29 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
+import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { Observable } from 'rxjs';
 import { concatMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { TodoList, TodoListItem } from '../todo.model';
 import { TodoService } from '../todo.service';
 
-interface TodoListState {
+interface TodoListState extends EntityState<TodoListItem> {
   id: string;
   title: string;
-  items: TodoListItem[];
   loading: boolean;
 
   editing?: string;
 }
 
-const initialState: TodoListState = { id: '', title: '', items: [], loading: true };
+const todolist = createEntityAdapter<TodoListItem>();
+const initialState: TodoListState = todolist.getInitialState({ id: '', title: '', loading: true });
+const { selectAll } = todolist.getSelectors();
 
 @Injectable()
 export class TodoListStore extends ComponentStore<TodoListState> {
   // Default Selectors
   readonly id$ = this.select(({ id }) => id);
   readonly title$ = this.select(({ title }) => title);
-  readonly items$ = this.select(({ items }) => items);
+  readonly items$ = this.select(selectAll);
   readonly loading$ = this.select(({ loading }) => loading);
   readonly editing$ = this.select(({ editing }) => editing);
 
@@ -36,18 +38,16 @@ export class TodoListStore extends ComponentStore<TodoListState> {
   );
 
   // Updaters
-  private readonly setList = this.updater((state, list: TodoList) => {
-    return { ...state, ...list, loading: false, editing: undefined };
+  private readonly setList = this.updater((state, { items, ...list }: TodoList) => {
+    return todolist.setAll(items, { ...state, ...initialState, ...list, loading: false });
   });
 
   private readonly addOne = this.updater((state, item: TodoListItem) => {
-    const items = state.items.concat(item);
-    return { ...state, items, editing: item.id, loading: false };
+    return todolist.addOne(item, { ...state, editing: item.id, loading: false });
   });
 
   private readonly replaceItem = this.updater((state, updated: TodoListItem) => {
-    const items = state.items.map(item => (item.id === updated.id ? updated : item));
-    return { ...state, items, loading: false };
+    return todolist.setOne(updated, { ...state, loading: false });
   });
 
   readonly editItem = this.updater((state, id: string | undefined) => {
