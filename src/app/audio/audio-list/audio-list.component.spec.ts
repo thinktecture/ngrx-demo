@@ -8,7 +8,7 @@ describe('AudioListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AudioListComponent],
+      imports: [AudioListComponent],
     }).compileComponents();
   });
 

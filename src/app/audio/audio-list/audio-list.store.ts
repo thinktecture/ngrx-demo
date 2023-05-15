@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -14,7 +14,10 @@ export interface AudioListState {
 
 @Injectable()
 export class AudioListStore extends ComponentStore<AudioListState> {
-  readonly audios$ = this.select(({ audios }) => audios);
+  private store = inject(Store);
+  private audioService = inject(AudioService);
+
+  readonly audios = this.selectSignal(({ audios }) => audios);
 
   readonly setAudios = this.updater((state, audios: Audio[]) => ({ ...state, audios }));
 
@@ -26,9 +29,9 @@ export class AudioListStore extends ComponentStore<AudioListState> {
   );
 
   // View Model Selector
-  readonly audioList$ = this.select(
-    this.audios$,
-    this.store.select(selectAudioFavoriteIds),
+  readonly audioList = this.selectSignal(
+    this.audios,
+    this.store.selectSignal(selectAudioFavoriteIds),
     (audios, favoriteIds) => {
       const favoritableAudios: (Audio & Favoritable)[] = audios.map(audio => ({
         ...audio,
@@ -38,7 +41,7 @@ export class AudioListStore extends ComponentStore<AudioListState> {
     },
   );
 
-  constructor(private store: Store, private audioService: AudioService) {
+  constructor() {
     super({ audios: [] });
   }
 }

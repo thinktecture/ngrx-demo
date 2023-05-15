@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
 import { Store } from '@ngrx/store';
 import { markNotificationsAsSeen, removeNotification } from '../state/notification.actions';
 import {
@@ -10,13 +13,15 @@ import {
   selector: 'app-notifications',
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
+  standalone: true,
+  imports: [NgIf, MatListModule, MatButtonModule, NgFor],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationsComponent {
-  readonly notifications$ = this.store.select(selectNotifications);
-  readonly unseenCount$ = this.store.select(selectUnseenNotificationsCount);
+  private store = inject(Store);
 
-  constructor(private store: Store) {}
+  readonly notifications = this.store.selectSignal(selectNotifications);
+  readonly unseenCount = this.store.selectSignal(selectUnseenNotificationsCount);
 
   delete(id: string): void {
     this.store.dispatch(removeNotification({ id }));

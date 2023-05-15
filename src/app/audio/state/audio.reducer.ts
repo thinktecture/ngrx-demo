@@ -1,4 +1,4 @@
-import { createReducer, on } from '@ngrx/store';
+import { createFeature, createReducer, on } from '@ngrx/store';
 import { Audio } from '../audio.model';
 import { addAudioFavorite, loadAudioFavoritesSuccess, removeAudioFavorite } from './audio.actions';
 
@@ -6,13 +6,13 @@ export interface AudioState {
   favorites: Audio[];
 }
 
-export const initialAudioState: AudioState = {
+const initialState: AudioState = {
   favorites: [],
 };
 
-export const audioReducer = createReducer(
+const reducer = createReducer(
   // Provide initial state of the store
-  initialAudioState,
+  initialState,
 
   // Load a list of favorites
   on(loadAudioFavoritesSuccess, (state, { favorites }) => {
@@ -31,3 +31,5 @@ export const audioReducer = createReducer(
     return { ...state, favorites };
   }),
 );
+
+export const audioFeature = createFeature({ name: 'audio', reducer });

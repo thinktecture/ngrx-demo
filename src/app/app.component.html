@@ -7,8 +7,8 @@
 
   <span class="spacer"></span>
 
-  <button mat-icon-button (click)="notificationsOpen = !notificationsOpen">
-    <mat-icon>{{ $any(unseenCount$ | async) > 0 ? 'mark_email_unread' : 'mail' }}</mat-icon>
+  <button mat-icon-button (click)="toggleDrawer()">
+    <mat-icon>{{ icon() }}</mat-icon>
   </button>
 </mat-toolbar>
 
@@ -21,7 +21,7 @@
     <router-outlet></router-outlet>
   </mat-drawer-content>
 
-  <mat-drawer class="notifications" mode="side" [opened]="notificationsOpen" position="end">
+  <mat-drawer class="notifications" mode="side" [opened]="notificationsOpen()" position="end">
     <app-notifications></app-notifications>
   </mat-drawer>
 </mat-drawer-container>

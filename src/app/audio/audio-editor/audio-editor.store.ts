@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -12,27 +12,30 @@ export interface AudioEditorState {
 
 @Injectable()
 export class AudioEditorStore extends ComponentStore<AudioEditorState> {
+  private audioService = inject(AudioService);
+
   readonly load = this.effect((id$: Observable<string>) => {
     return id$.pipe(
       switchMap(id => {
         this.patchState({ loading: true });
+
         return this.audioService.byId(id);
       }),
-      tapResponse(
-        audio => {
+      tapResponse({
+        next: audio => {
           this.patchState({ audio, loading: false });
         },
-        () => {
+        error: () => {
           this.patchState({ loading: false });
         },
-      ),
+      }),
     );
   });
 
-  readonly audio$ = this.select(({ audio }) => audio);
-  readonly loading$ = this.select(({ loading }) => loading);
+  readonly audio = this.selectSignal(({ audio }) => audio);
+  readonly loading = this.selectSignal(({ loading }) => loading);
 
-  constructor(private audioService: AudioService) {
+  constructor() {
     super({ loading: false });
   }
 }

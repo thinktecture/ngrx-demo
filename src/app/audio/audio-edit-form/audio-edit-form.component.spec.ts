@@ -8,7 +8,7 @@ describe('AudioEditFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AudioEditFormComponent],
+      imports: [AudioEditFormComponent],
     }).compileComponents();
   });
 

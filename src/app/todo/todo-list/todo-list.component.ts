@@ -1,83 +1,40 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { EMPTY, Subject } from 'rxjs';
-import { catchError, finalize, map, switchMap, takeUntil } from 'rxjs/operators';
+import { NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 import { TodoListItem } from '../todo.model';
-import { TodoService } from '../todo.service';
+import { TodoListStore } from './todo-list.store';
 
 @Component({
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss'],
+  providers: [TodoListStore],
+  standalone: true,
+  imports: [MatTableModule, MatIconModule, NgIf, MatButtonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodoListComponent {
+  private todoListStore = inject(TodoListStore);
+  private route = inject(ActivatedRoute);
+
   readonly columns = ['done', 'content'];
 
-  id = '';
-  title = '';
-  items: TodoListItem[] = [];
-
-  loading = false;
-  editing?: string;
-
-  addDisabled = true;
-
-  private destroy$ = new Subject<void>();
-
-  constructor(
-    private route: ActivatedRoute,
-    private todoService: TodoService,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) {}
+  title = this.todoListStore.title;
+  items = this.todoListStore.items;
+  editing = this.todoListStore.editing;
+  addDisabled = this.todoListStore.addDisabled$;
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(
-        map(params => params.get('id') ?? ''),
-        switchMap(id => {
-          this.loading = true;
-          this.changeDetectorRef.markForCheck();
+    const id$ = this.route.paramMap.pipe(map(params => params.get('id') ?? ''));
 
-          return this.todoService.getList(id);
-        }),
-        catchError(() => {
-          this.loading = false;
-          this.changeDetectorRef.markForCheck();
-
-          return EMPTY;
-        }),
-        takeUntil(this.destroy$),
-      )
-      .subscribe(({ id, title, items }) => {
-        this.id = id;
-        this.title = title;
-        this.items = items;
-        this.editing = undefined;
-        this.loading = false;
-
-        this.changeDetectorRef.markForCheck();
-      });
+    this.todoListStore.loadList(id$);
   }
 
   addEmpty(): void {
-    if (this.loading) {
-      return;
-    }
-
-    this.loading = true;
-
-    this.todoService
-      .addItem(this.id, '')
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          this.changeDetectorRef.markForCheck();
-        }),
-        takeUntil(this.destroy$),
-      )
-      .subscribe(item => {
-        this.items = [...this.items, item];
-      });
+    this.todoListStore.addItem();
   }
 
   setDone(item: TodoListItem, done: boolean): void {
@@ -89,36 +46,14 @@ export class TodoListComponent {
   }
 
   private updateItem(item: TodoListItem, update: Partial<TodoListItem>): void {
-    if (this.loading) {
-      return;
-    }
-
-    this.loading = true;
-
-    this.todoService
-      .updateItem(this.id, item.id, update)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          this.editing = undefined;
-          this.changeDetectorRef.markForCheck();
-        }),
-        takeUntil(this.destroy$),
-      )
-      .subscribe(updated => {
-        this.items = this.items.map(item => (item.id === updated.id ? updated : item));
-      });
+    this.todoListStore.updateItem({ id: item.id, update });
   }
 
   edit(id?: string): void {
-    this.editing = id;
+    this.todoListStore.editItem(id);
   }
 
   cancelEdit(): void {
-    this.editing = undefined;
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
+    this.todoListStore.editItem(undefined);
   }
 }

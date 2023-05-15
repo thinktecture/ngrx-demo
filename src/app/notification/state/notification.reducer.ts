@@ -1,4 +1,4 @@
-import { createReducer, on } from '@ngrx/store';
+import { createFeature, createReducer, on } from '@ngrx/store';
 import {
   addNotification,
   markNotificationsAsSeen,
@@ -6,8 +6,6 @@ import {
   updateNotification,
 } from './notification.actions';
 import { Notification } from './notification.model';
-
-export const NOTIFICATION_STATE = 'notification';
 
 export interface NotificationState {
   notifications: Notification[];
@@ -19,7 +17,7 @@ const initialState: NotificationState = {
 
 let notificationId = 0;
 
-export const notificationsReducer = createReducer(
+const reducer = createReducer(
   initialState,
   on(addNotification, (state, options) => {
     const id = `${notificationId++}`;
@@ -51,3 +49,5 @@ export const notificationsReducer = createReducer(
     return { ...state, notifications };
   }),
 );
+
+export const notificationFeature = createFeature({ name: 'notification', reducer });

@@ -1,13 +1,30 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { ReactiveFormsModule, UntypedFormBuilder, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { Audio } from '../audio.model';
 
 @Component({
   selector: 'app-audio-edit-form',
   templateUrl: './audio-edit-form.component.html',
   styleUrls: ['./audio-edit-form.component.scss'],
+  standalone: true,
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AudioEditFormComponent implements OnChanges {
+  private readonly formBuilder = inject(UntypedFormBuilder);
+
   @Input() data?: Audio | null;
   @Input() loading: boolean | null = false;
 
@@ -18,8 +35,6 @@ export class AudioEditFormComponent implements OnChanges {
     title: ['', Validators.required],
     isFavorite: false,
   });
-
-  constructor(private readonly formBuilder: UntypedFormBuilder) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data) {

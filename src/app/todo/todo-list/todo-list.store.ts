@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { Observable } from 'rxjs';
-import { concatMap, switchMap, withLatestFrom } from 'rxjs/operators';
+import { concatMap, switchMap } from 'rxjs/operators';
 import { TodoList, TodoListItem } from '../todo.model';
 import { TodoService } from '../todo.service';
 
@@ -20,18 +20,20 @@ const { selectAll } = todolist.getSelectors();
 
 @Injectable()
 export class TodoListStore extends ComponentStore<TodoListState> {
+  private readonly todoService = inject(TodoService);
+
   // Default Selectors
-  readonly id$ = this.select(({ id }) => id);
-  readonly title$ = this.select(({ title }) => title);
-  readonly items$ = this.select(selectAll);
-  readonly loading$ = this.select(({ loading }) => loading);
-  readonly editing$ = this.select(({ editing }) => editing);
+  readonly id = this.selectSignal(({ id }) => id);
+  readonly title = this.selectSignal(({ title }) => title);
+  readonly items = this.selectSignal(selectAll);
+  readonly loading = this.selectSignal(({ loading }) => loading);
+  readonly editing = this.selectSignal(({ editing }) => editing);
 
   // View Selectors
-  readonly addDisabled$ = this.select(
-    this.items$,
-    this.loading$,
-    this.editing$,
+  readonly addDisabled$ = this.selectSignal(
+    this.items,
+    this.loading,
+    this.editing,
     (items, loading, editing) => {
       return loading || editing || (items.length > 0 && items[items.length - 1].content === '');
     },
@@ -59,6 +61,7 @@ export class TodoListStore extends ComponentStore<TodoListState> {
     id$.pipe(
       switchMap(id => {
         this.patchState({ loading: true });
+
         return this.todoService.getList(id).pipe(
           tapResponse(
             list => this.setList(list),
@@ -71,11 +74,10 @@ export class TodoListStore extends ComponentStore<TodoListState> {
 
   readonly addItem = this.effect(add$ =>
     add$.pipe(
-      withLatestFrom(this.state$),
-      concatMap(([_, state]) => {
+      concatMap(() => {
         this.patchState({ loading: true });
 
-        return this.todoService.addItem(state.id, '').pipe(
+        return this.todoService.addItem(this.id(), '').pipe(
           tapResponse(
             item => this.addOne(item),
             () => this.patchState({ loading: false }),
@@ -88,23 +90,22 @@ export class TodoListStore extends ComponentStore<TodoListState> {
   readonly updateItem = this.effect(
     (item$: Observable<{ id: string; update: Partial<TodoListItem> }>) =>
       item$.pipe(
-        withLatestFrom(this.state$),
-        concatMap(([{ id, update }, state]) => {
+        concatMap(({ id, update }) => {
           this.patchState({ editing: undefined, loading: true });
 
-          return this.todoService.updateItem(state.id, id, update).pipe(
-            tapResponse(
-              updated => {
+          return this.todoService.updateItem(this.id(), id, update).pipe(
+            tapResponse({
+              next: updated => {
                 this.replaceItem(updated);
               },
-              () => this.patchState({ loading: false }),
-            ),
+              error: () => this.patchState({ loading: false }),
+            }),
           );
         }),
       ),
   );
 
-  constructor(private todoService: TodoService) {
+  constructor() {
     super(initialState);
   }
 }

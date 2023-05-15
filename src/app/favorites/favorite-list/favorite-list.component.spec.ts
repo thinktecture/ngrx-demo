@@ -8,7 +8,7 @@ describe('FavoriteListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FavoriteListComponent],
+      imports: [FavoriteListComponent],
     }).compileComponents();
   });
 

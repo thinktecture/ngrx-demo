@@ -1,7 +1,7 @@
-<ng-container *ngIf="notifications$ | async as notifications">
+<ng-container *ngIf="notifications() as notifications">
   <mat-list *ngIf="notifications.length; else empty">
     <div mat-subheader>
-      Messages (Unseen: {{ unseenCount$ | async }})
+      Messages (Unseen: {{ unseenCount() }})
       <button mat-button (click)="seen()">Mark As Seen</button>
     </div>
 

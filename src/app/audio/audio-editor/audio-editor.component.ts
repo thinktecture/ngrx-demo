@@ -1,32 +1,34 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
+import { AudioEditFormComponent } from '../audio-edit-form/audio-edit-form.component';
 import { Audio } from '../audio.model';
 import { AudioEditorStore } from './audio-editor.store';
 
 @Component({
   templateUrl: './audio-editor.component.html',
   styleUrls: ['./audio-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [AudioEditorStore],
+  standalone: true,
+  imports: [MatCardModule, NgIf, AudioEditFormComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AudioEditorComponent implements OnInit {
-  readonly audio$ = this.audioEditorStore.audio$;
-  readonly loading$ = this.audioEditorStore.loading$;
+  private activatedRoute = inject(ActivatedRoute);
+  private audioEditorStore = inject(AudioEditorStore);
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private audioEditorStore: AudioEditorStore,
-    private store: Store,
-  ) {}
+  readonly audio = this.audioEditorStore.audio;
+  readonly loading = this.audioEditorStore.loading;
 
   ngOnInit(): void {
-    const id$ = this.activatedRoute.params.pipe(map(params => `${params.id}`));
+    const id$ = this.activatedRoute.paramMap.pipe(map(params => params.get('id') ?? ''));
+
     this.audioEditorStore.load(id$);
   }
 
-  save(audio: Audio): void {
+  save(_: Audio): void {
     // this.store.dispatch(updateAudio({ audio, redirect: ['audio'] }));
   }
 }
