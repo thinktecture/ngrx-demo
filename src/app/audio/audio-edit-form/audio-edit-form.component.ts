@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormBuilder, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Audio } from '../audio.model';
@@ -19,7 +20,13 @@ import { Audio } from '../audio.model';
   templateUrl: './audio-edit-form.component.html',
   styleUrls: ['./audio-edit-form.component.scss'],
   standalone: true,
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCheckboxModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AudioEditFormComponent implements OnChanges {

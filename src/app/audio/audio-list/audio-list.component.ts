@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
+import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Favoritable } from 'src/app/favorites/favoritable.model';
 import { Audio } from '../audio.model';
@@ -13,14 +14,14 @@ import { AudioListStore } from './audio-list.store';
   styleUrls: ['./audio-list.component.scss'],
   providers: [AudioListStore],
   standalone: true,
-  imports: [MatTableModule, MatButtonModule, MatIconModule],
+  imports: [MatTableModule, MatButtonModule, MatIconModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AudioListComponent implements OnInit {
   private audioListStore = inject(AudioListStore);
   private store = inject(Store);
 
-  readonly columns = ['favorite', 'title', 'author'];
+  readonly columns = ['favorite', 'title', 'author', 'actions'];
 
   readonly audioList = this.audioListStore.audioList;
 
