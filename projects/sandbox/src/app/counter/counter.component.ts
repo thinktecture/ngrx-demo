@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, signal } from '@angular/core';
+import { Component } from '@angular/core';
 
 let id = 1;
 
@@ -20,25 +20,27 @@ export class CounterComponent {
   private readonly storageKey = `counter${id++}`;
   private readonly restored = parseInt(sessionStorage.getItem(this.storageKey) ?? '');
 
-  readonly counter = signal(this.restored || 0);
+  counter = this.restored || 0;
 
-  color = computed(() => {
+  color(): string {
     console.log(this.storageKey, 'running');
 
-    return nthColor(this.counter());
-  });
+    return nthColor(this.counter);
+  }
 
   increment(): void {
-    this.counter.update(count => ++count);
+    this.counter = this.counter + 1;
+    this.persist();
   }
 
   reset(): void {
-    this.counter.set(0);
+    this.counter = 0;
+    this.persist();
   }
 
-  readonly persist = effect(() => {
+  readonly persist = () => {
     console.log('persisting', this.storageKey);
 
-    sessionStorage.setItem(this.storageKey, `${this.counter()}`);
-  });
+    sessionStorage.setItem(this.storageKey, `${this.counter}`);
+  };
 }
