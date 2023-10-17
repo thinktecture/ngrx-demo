@@ -1,3 +1,4 @@
-<app-counter storageKey="counter1"></app-counter>
-<app-counter storageKey="counter2"></app-counter>
-<app-counter storageKey="counter3"></app-counter>
+<app-counter *ngIf="show()" storageKey="counter1"></app-counter>
+<app-counter *ngIf="show()" storageKey="counter2"></app-counter>
+<app-counter *ngIf="show()" storageKey="counter3"></app-counter>
+<button (click)="toggle()">Toggle</button>

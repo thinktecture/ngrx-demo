@@ -10,6 +10,8 @@ import {
   signal,
   untracked,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { interval, take } from 'rxjs';
 
 let id = 1;
 
@@ -33,7 +35,7 @@ export class CounterComponent {
 
   @Input({ required: true }) storageKey = '';
 
-  readonly save = signal<void>(undefined, { equal: () => false });
+  readonly save = toSignal(interval(1000));
   readonly counter = signal(0);
 
   ngOnInit(): void {
@@ -45,10 +47,7 @@ export class CounterComponent {
   }
 
   color = computed(() => {
-    console.log(this.storageKey, 'running');
-    this.save();
-
-    return nthColor(untracked(() => this.counter()));
+    return nthColor(this.counter());
   });
 
   increment(): void {
@@ -67,17 +66,13 @@ export class CounterComponent {
     this.effectRef?.destroy();
   }
 
-  persist(): void {
-    this.save.set();
-  }
+  persist(): void {}
 
   private storeCounter(): void {
     this.effectRef?.destroy();
     this.effectRef = effect(
       () => {
-        this.save();
-
-        console.log('persisting', this.storageKey);
+        console.log('persisting', this.storageKey, this.save());
 
         untracked(() => {
           sessionStorage.setItem(this.storageKey, `${this.counter()}`);
