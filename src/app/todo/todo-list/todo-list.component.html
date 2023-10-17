@@ -1,6 +1,6 @@
-<h2>{{ title() }}</h2>
+<h2>{{ title }}</h2>
 
-<table mat-table [dataSource]="items()" class="mat-elevation-z8">
+<table mat-table [dataSource]="items" class="mat-elevation-z8">
   <ng-container matColumnDef="done">
     <td mat-cell *matCellDef="let todo" (click)="setDone(todo, !todo.done)">
       <mat-icon>{{ todo.done ? 'task_alt' : 'radio_button_unchecked' }}</mat-icon>
@@ -10,7 +10,7 @@
   <ng-container matColumnDef="content">
     <td mat-cell *matCellDef="let todo">
       <div class="content-container">
-        @if (editing() === todo.id) {
+        @if (editing === todo.id) {
         <input #input [value]="todo.content" />
         <button mat-icon-button (click)="setContent(todo, input.value)">
           <mat-icon>check</mat-icon>
@@ -31,7 +31,7 @@
 <div class="button-row">
   <a mat-button [routerLink]="['..']">Back</a>
   <span class="spacer"></span>
-  <button mat-raised-button color="primary" (click)="addEmpty()" [disabled]="addDisabled()">
+  <button mat-raised-button color="primary" (click)="addEmpty()" [disabled]="addDisabled">
     Add
   </button>
 </div>

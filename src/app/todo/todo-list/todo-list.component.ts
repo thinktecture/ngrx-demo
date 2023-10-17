@@ -5,35 +5,32 @@ import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { TodoListItem } from '../todo.model';
-import { TodoListStore } from './todo-list.store';
 
 @Component({
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss'],
-  providers: [TodoListStore],
   standalone: true,
   imports: [MatTableModule, MatIconModule, MatButtonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodoListComponent {
-  private todoListStore = inject(TodoListStore);
   private route = inject(ActivatedRoute);
 
   readonly columns = ['done', 'content'];
 
-  title = this.todoListStore.title;
-  items = this.todoListStore.items;
-  editing = this.todoListStore.editing;
-  addDisabled = this.todoListStore.addDisabled$;
+  title = 'Title';
+  items: TodoListItem[] = [];
+  editing?: string;
+  addDisabled = true;
 
   ngOnInit(): void {
     const id$ = this.route.paramMap.pipe(map(params => params.get('id') ?? ''));
 
-    this.todoListStore.loadList(id$);
+    // TODO implement me
   }
 
   addEmpty(): void {
-    this.todoListStore.addItem();
+    // TODO implement me
   }
 
   setDone(item: TodoListItem, done: boolean): void {
@@ -45,14 +42,14 @@ export class TodoListComponent {
   }
 
   private updateItem(item: TodoListItem, update: Partial<TodoListItem>): void {
-    this.todoListStore.updateItem({ id: item.id, update });
+    // TODO implement me
   }
 
-  edit(id?: string): void {
-    this.todoListStore.editItem(id);
+  edit(_id?: string): void {
+    // TODO implement me
   }
 
   cancelEdit(): void {
-    this.todoListStore.editItem(undefined);
+    // TODO implement me
   }
 }
