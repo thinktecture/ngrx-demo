@@ -8,6 +8,7 @@ import {
   Injector,
   Input,
   signal,
+  untracked,
 } from '@angular/core';
 
 let id = 1;
@@ -32,6 +33,7 @@ export class CounterComponent {
 
   @Input({ required: true }) storageKey = '';
 
+  readonly save = signal<void>(undefined, { equal: () => false });
   readonly counter = signal(0);
 
   ngOnInit(): void {
@@ -44,8 +46,9 @@ export class CounterComponent {
 
   color = computed(() => {
     console.log(this.storageKey, 'running');
+    this.save();
 
-    return nthColor(this.counter());
+    return nthColor(untracked(() => this.counter()));
   });
 
   increment(): void {
@@ -64,13 +67,21 @@ export class CounterComponent {
     this.effectRef?.destroy();
   }
 
+  persist(): void {
+    this.save.set();
+  }
+
   private storeCounter(): void {
     this.effectRef?.destroy();
     this.effectRef = effect(
       () => {
+        this.save();
+
         console.log('persisting', this.storageKey);
 
-        sessionStorage.setItem(this.storageKey, `${this.counter()}`);
+        untracked(() => {
+          sessionStorage.setItem(this.storageKey, `${this.counter()}`);
+        });
       },
       { injector: this.injector },
     );
