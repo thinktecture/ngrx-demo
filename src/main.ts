@@ -20,7 +20,7 @@ bootstrapApplication(AppComponent, {
     provideAnimations(),
     // STORE
     provideStore(),
-    provideStoreDevtools({ maxAge: 25, logOnly: environment.production }),
+    provideStoreDevtools({ maxAge: 25, logOnly: environment.production, connectInZone: true }),
     // APP ROUTES
     provideRouter(appRoutes),
     // MODULES
