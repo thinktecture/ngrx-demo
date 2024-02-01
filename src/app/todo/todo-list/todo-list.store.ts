@@ -1,111 +1,74 @@
-import { inject, Injectable } from '@angular/core';
-import { ComponentStore, tapResponse } from '@ngrx/component-store';
-import { createEntityAdapter, EntityState } from '@ngrx/entity';
-import { Observable } from 'rxjs';
-import { concatMap, switchMap } from 'rxjs/operators';
+import { computed, inject } from '@angular/core';
+import { tapResponse } from '@ngrx/component-store';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { addEntity, setAllEntities, setEntity, withEntities } from '@ngrx/signals/entities';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { firstValueFrom, Observable, switchMap } from 'rxjs';
 import { TodoList, TodoListItem } from '../todo.model';
 import { TodoService } from '../todo.service';
 
-interface TodoListState extends EntityState<TodoListItem> {
+interface TodoListState {
   id: string;
   title: string;
   loading: boolean;
-
-  editing?: string;
+  editing: string | undefined;
 }
 
-const todolist = createEntityAdapter<TodoListItem>();
-const initialState: TodoListState = todolist.getInitialState({ id: '', title: '', loading: true });
-const { selectAll } = todolist.getSelectors();
+const initialState: TodoListState = {
+  id: '',
+  title: '',
+  loading: false,
+  editing: undefined,
+};
 
-@Injectable()
-export class TodoListStore extends ComponentStore<TodoListState> {
-  private readonly todoService = inject(TodoService);
+export const TodoListStore = signalStore(
+  withState(initialState),
+  withEntities<TodoListItem>(),
 
-  // Default Selectors
-  readonly id = this.selectSignal(({ id }) => id);
-  readonly title = this.selectSignal(({ title }) => title);
-  readonly items = this.selectSignal(selectAll);
-  readonly loading = this.selectSignal(({ loading }) => loading);
-  readonly editing = this.selectSignal(({ editing }) => editing);
+  withComputed(({ editing, loading, entities }) => ({
+    addDisabled: computed(() => loading() || editing() || entities().at(-1)?.content === ''),
+  })),
 
-  // View Selectors
-  readonly addDisabled$ = this.selectSignal(
-    this.items,
-    this.loading,
-    this.editing,
-    (items, loading, editing) => {
-      return loading || editing || (items.length > 0 && items[items.length - 1].content === '');
-    },
-  );
+  withMethods((store, todoService = inject(TodoService)) => {
+    const loading = (loading: boolean) => ({ loading });
 
-  // Updaters
-  private readonly setList = this.updater((state, { items, ...list }: TodoList) => {
-    return todolist.setAll(items, { ...state, ...initialState, ...list, loading: false });
-  });
+    function loadingStart(): void {
+      patchState(store, loading(true));
+    }
 
-  private readonly addOne = this.updater((state, item: TodoListItem) => {
-    return todolist.addOne(item, { ...state, editing: item.id, loading: false });
-  });
+    function loadingDone(): void {
+      patchState(store, loading(false));
+    }
 
-  private readonly replaceItem = this.updater((state, updated: TodoListItem) => {
-    return todolist.setOne(updated, { ...state, loading: false });
-  });
+    function setList({ items, ...list }: TodoList): void {
+      patchState(store, { ...initialState, ...list }, setAllEntities(items));
+    }
 
-  readonly editItem = this.updater((state, id: string | undefined) => {
-    return { ...state, editing: id };
-  });
+    return {
+      editItem(id: string | undefined): void {
+        patchState(store, { editing: id });
+      },
 
-  // Effects
-  readonly loadList = this.effect((id$: Observable<string>) =>
-    id$.pipe(
-      switchMap(id => {
-        this.patchState({ loading: true });
+      async addItem(): Promise<void> {
+        loadingStart();
+        const item = await firstValueFrom(todoService.addItem(store.id(), ''));
+        patchState(store, addEntity(item), { editing: item.id }, loading(false));
+      },
 
-        return this.todoService.getList(id).pipe(
-          tapResponse(
-            list => this.setList(list),
-            () => this.patchState({ loading: false }),
-          ),
-        );
-      }),
-    ),
-  );
+      async updateItem(id: string, update: Partial<TodoListItem>): Promise<void> {
+        loadingStart();
+        const updated = await firstValueFrom(todoService.updateItem(store.id(), id, update));
+        patchState(store, setEntity(updated), { editing: undefined }, loading(false));
+      },
 
-  readonly addItem = this.effect(add$ =>
-    add$.pipe(
-      concatMap(() => {
-        this.patchState({ loading: true });
-
-        return this.todoService.addItem(this.id(), '').pipe(
-          tapResponse(
-            item => this.addOne(item),
-            () => this.patchState({ loading: false }),
-          ),
-        );
-      }),
-    ),
-  );
-
-  readonly updateItem = this.effect(
-    (item$: Observable<{ id: string; update: Partial<TodoListItem> }>) =>
-      item$.pipe(
-        concatMap(({ id, update }) => {
-          this.patchState({ editing: undefined, loading: true });
-
-          return this.todoService.updateItem(this.id(), id, update).pipe(
-            tapResponse({
-              next: updated => {
-                this.replaceItem(updated);
-              },
-              error: () => this.patchState({ loading: false }),
-            }),
-          );
-        }),
+      loadList: rxMethod((id$: Observable<string>) =>
+        id$.pipe(
+          switchMap(id => {
+            loadingStart();
+            return todoService.getList(id).pipe(tapResponse(setList, loadingDone));
+          }),
+        ),
       ),
-  );
-
-  constructor() {
-    super(initialState);
-  }
-}
+    };
+  }),
+);

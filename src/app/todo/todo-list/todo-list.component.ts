@@ -22,13 +22,12 @@ export class TodoListComponent {
   readonly columns = ['done', 'content'];
 
   title = this.todoListStore.title;
-  items = this.todoListStore.items;
+  items = this.todoListStore.entities;
   editing = this.todoListStore.editing;
-  addDisabled = this.todoListStore.addDisabled$;
+  addDisabled = this.todoListStore.addDisabled;
 
   ngOnInit(): void {
     const id$ = this.route.paramMap.pipe(map(params => params.get('id') ?? ''));
-
     this.todoListStore.loadList(id$);
   }
 
@@ -45,7 +44,7 @@ export class TodoListComponent {
   }
 
   private updateItem(item: TodoListItem, update: Partial<TodoListItem>): void {
-    this.todoListStore.updateItem({ id: item.id, update });
+    this.todoListStore.updateItem(item.id, update);
   }
 
   edit(id?: string): void {
