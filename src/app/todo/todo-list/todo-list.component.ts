@@ -11,52 +11,36 @@ import { TodoListStore } from './todo-list.store';
 @Component({
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss'],
-  providers: [TodoListStore],
   imports: [MatButtonModule, MatButtonToggleModule, MatIconModule, MatTableModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TodoListComponent {
-  private todoListStore = inject(TodoListStore);
+export class TodoListComponent extends TodoListStore {
   private route = inject(ActivatedRoute);
 
   readonly columns = ['done', 'content'];
 
-  title = this.todoListStore.title;
-  items = this.todoListStore.sorted;
-  sortBy = this.todoListStore.sortBy;
-  editing = this.todoListStore.editing;
-  addDisabled = this.todoListStore.addDisabled;
-
   ngOnInit(): void {
     const id$ = this.route.paramMap.pipe(map(params => params.get('id') ?? ''));
-    this.todoListStore.loadList(id$);
+    this.loadList(id$);
   }
 
   addEmpty(): void {
-    this.todoListStore.addItem();
+    this.addItem();
   }
 
   setDone(item: TodoListItem, done: boolean): void {
-    this.updateItem(item, { done });
+    this.updateItem(item.id, { done });
   }
 
   setContent(item: TodoListItem, content: string): void {
-    this.updateItem(item, { content });
-  }
-
-  private updateItem(item: TodoListItem, update: Partial<TodoListItem>): void {
-    this.todoListStore.updateItem(item.id, update);
+    this.updateItem(item.id, { content });
   }
 
   edit(id?: string): void {
-    this.todoListStore.editItem(id);
+    this.editItem(id);
   }
 
   cancelEdit(): void {
-    this.todoListStore.editItem(undefined);
-  }
-
-  setSort(sortBy: keyof TodoListItem): void {
-    this.todoListStore.setSort(sortBy);
+    this.editItem(undefined);
   }
 }
