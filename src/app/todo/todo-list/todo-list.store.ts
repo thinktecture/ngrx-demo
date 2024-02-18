@@ -4,6 +4,7 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { addEntity, setAllEntities, setEntity, withEntities } from '@ngrx/signals/entities';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { firstValueFrom, Observable, switchMap } from 'rxjs';
+import { setSort, unsetSort, withSort } from '../sort.feature';
 import { TodoList, TodoListItem } from '../todo.model';
 import { TodoService } from '../todo.service';
 
@@ -25,6 +26,7 @@ export const TodoListStore = signalStore(
   { protectedState: false },
   withState(initialState),
   withEntities<TodoListItem>(),
+  withSort('content'),
 
   withComputed(({ editing, loading, entities }) => ({
     addDisabled: computed(() => loading() || editing() || entities().at(-1)?.content === ''),
@@ -48,6 +50,10 @@ export const TodoListStore = signalStore(
     return {
       editItem(id: string | undefined): void {
         patchState(store, { editing: id });
+      },
+
+      setSort(sortBy?: keyof TodoListItem): void {
+        patchState(store, sortBy ? setSort(sortBy) : unsetSort());
       },
 
       async addItem(): Promise<void> {

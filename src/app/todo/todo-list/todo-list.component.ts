@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -11,7 +12,7 @@ import { TodoListStore } from './todo-list.store';
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss'],
   providers: [TodoListStore],
-  imports: [MatTableModule, MatIconModule, MatButtonModule, RouterLink],
+  imports: [MatButtonModule, MatButtonToggleModule, MatIconModule, MatTableModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodoListComponent {
@@ -21,7 +22,8 @@ export class TodoListComponent {
   readonly columns = ['done', 'content'];
 
   title = this.todoListStore.title;
-  items = this.todoListStore.entities;
+  items = this.todoListStore.sorted;
+  sortBy = this.todoListStore.sortBy;
   editing = this.todoListStore.editing;
   addDisabled = this.todoListStore.addDisabled;
 
@@ -52,5 +54,9 @@ export class TodoListComponent {
 
   cancelEdit(): void {
     this.todoListStore.editItem(undefined);
+  }
+
+  setSort(sortBy: keyof TodoListItem): void {
+    this.todoListStore.setSort(sortBy);
   }
 }

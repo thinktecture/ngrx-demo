@@ -1,5 +1,14 @@
 <h2>{{ title() }}</h2>
 
+<p>
+  Sort by:
+  <mat-button-toggle-group [value]="sortBy()" (change)="setSort($event.value)">
+    <mat-button-toggle value="done">Done</mat-button-toggle>
+    <mat-button-toggle value="content">Content</mat-button-toggle>
+    <mat-button-toggle value="">None</mat-button-toggle>
+  </mat-button-toggle-group>
+</p>
+
 <table mat-table [dataSource]="items()" class="mat-elevation-z8">
   <ng-container matColumnDef="done">
     <td mat-cell *matCellDef="let todo" (click)="setDone(todo, !todo.done)">
