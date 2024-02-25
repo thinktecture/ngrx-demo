@@ -1,23 +1,16 @@
-<ng-container *ngIf="notifications() as notifications">
-  <mat-list *ngIf="notifications.length; else empty">
-    <div mat-subheader>
-      Messages (Unseen: {{ unseenCount() }})
-      <button mat-button (click)="seen()">Mark As Seen</button>
-    </div>
-
-    <mat-list-item
-      *ngFor="let notification of notifications"
-      (click)="delete(notification.id)"
-      [class.unseen]="!notification.seen"
-    >
-      <div mat-line>{{ notification.text }}</div>
-      <div mat-line>
-        <ng-container *ngIf="notification.reference">[{{ notification.reference }}]</ng-container>
-      </div>
-    </mat-list-item>
-  </mat-list>
-</ng-container>
-
-<ng-template #empty>
-  <p>There are currently no notifications :)</p>
-</ng-template>
+@if (notifications().length) {
+<mat-list>
+  <div mat-subheader>
+    Messages (Unseen: {{ unseenCount() }})
+    <button mat-button (click)="seen()">Mark As Seen</button>
+  </div>
+  @for (notification of notifications(); track notification) {
+  <mat-list-item (click)="delete(notification.id)" [class.unseen]="!notification.seen">
+    <div mat-line>{{ notification.text }}</div>
+    <div mat-line>@if (notification.reference) { [{{ notification.reference }}] }</div>
+  </mat-list-item>
+  }
+</mat-list>
+} @else {
+<p>There are currently no notifications :)</p>
+}

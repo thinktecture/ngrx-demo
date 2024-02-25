@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ActivatedRoute } from '@angular/router';
@@ -12,7 +11,7 @@ import { AudioEditorStore } from './audio-editor.store';
   styleUrls: ['./audio-editor.component.scss'],
   providers: [AudioEditorStore],
   standalone: true,
-  imports: [MatCardModule, NgIf, AudioEditFormComponent],
+  imports: [MatCardModule, AudioEditFormComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AudioEditorComponent implements OnInit {

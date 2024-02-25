@@ -2,8 +2,10 @@
 
 <mat-card>
   <mat-nav-list>
-    <mat-list-item *ngFor="let list of todoLists()" [routerLink]="[list.id]">
+    @for (list of todoLists(); track list) {
+    <mat-list-item [routerLink]="[list.id]">
       {{ list.title }}
     </mat-list-item>
+    }
   </mat-nav-list>
 </mat-card>

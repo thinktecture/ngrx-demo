@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
@@ -14,7 +13,7 @@ import {
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
   standalone: true,
-  imports: [NgIf, MatListModule, MatButtonModule, NgFor],
+  imports: [MatListModule, MatButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationsComponent {

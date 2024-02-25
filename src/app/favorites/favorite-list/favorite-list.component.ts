@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,7 +15,7 @@ const selectFavorites = createSelector(selectAudioFavoriteItems, items => {
   templateUrl: './favorite-list.component.html',
   styleUrls: ['./favorite-list.component.scss'],
   standalone: true,
-  imports: [MatListModule, NgFor, NgIf, MatButtonModule, MatIconModule],
+  imports: [MatListModule, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FavoriteListComponent {

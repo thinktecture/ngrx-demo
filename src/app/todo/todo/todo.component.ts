@@ -1,4 +1,3 @@
-import { NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
@@ -10,7 +9,7 @@ import { TodoService } from '../todo.service';
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.scss'],
   standalone: true,
-  imports: [MatCardModule, MatListModule, NgFor, RouterLink],
+  imports: [MatCardModule, MatListModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodoComponent {

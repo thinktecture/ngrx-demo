@@ -1,11 +1,7 @@
 <mat-card>
   <h3>Edit Audio</h3>
 
-  <app-audio-edit-form
-    *ngIf="!loading(); else showLoading"
-    [data]="audio()"
-    (dataSubmit)="save($event)"
-  ></app-audio-edit-form>
+  @if (!loading()) {
+  <app-audio-edit-form [data]="audio()" (dataSubmit)="save($event)"></app-audio-edit-form>
+  } @else { Loading }
 </mat-card>
-
-<ng-template #showLoading>Loading</ng-template>

@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +12,7 @@ import { TodoListStore } from './todo-list.store';
   styleUrls: ['./todo-list.component.scss'],
   providers: [TodoListStore],
   standalone: true,
-  imports: [MatTableModule, MatIconModule, NgIf, MatButtonModule, RouterLink],
+  imports: [MatTableModule, MatIconModule, MatButtonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodoListComponent {

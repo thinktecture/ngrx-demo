@@ -10,19 +10,17 @@
   <ng-container matColumnDef="content">
     <td mat-cell *matCellDef="let todo">
       <div class="content-container">
-        <ng-container *ngIf="editing() === todo.id; else text">
-          <input #input [value]="todo.content" />
-          <button mat-icon-button (click)="setContent(todo, input.value)">
-            <mat-icon>check</mat-icon>
-          </button>
-          <button mat-icon-button (click)="cancelEdit()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </ng-container>
-
-        <ng-template #text>
-          <span class="content" (click)="edit(todo.id)">{{ todo.content }}</span>
-        </ng-template>
+        @if (editing() === todo.id) {
+        <input #input [value]="todo.content" />
+        <button mat-icon-button (click)="setContent(todo, input.value)">
+          <mat-icon>check</mat-icon>
+        </button>
+        <button mat-icon-button (click)="cancelEdit()">
+          <mat-icon>close</mat-icon>
+        </button>
+        } @else {
+        <span class="content" (click)="edit(todo.id)">{{ todo.content }}</span>
+        }
       </div>
     </td>
   </ng-container>
