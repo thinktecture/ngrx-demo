@@ -1,7 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, signal } from '@angular/core';
-
-let id = 1;
+import { Component, computed, effect, input, signal, untracked } from '@angular/core';
 
 function colorPicker(colors: string[]): (n: number) => string {
   const numColors = colors.length;
@@ -17,16 +15,11 @@ const nthColor = colorPicker(['#9cd08f', '#21295c', '#8b8bae', '#af125a', '#582b
   styleUrls: ['./counter.component.scss'],
 })
 export class CounterComponent {
-  private readonly storageKey = `counter${id++}`;
-  private readonly restored = parseInt(sessionStorage.getItem(this.storageKey) ?? '');
+  readonly storageKey = input.required<string>();
 
-  readonly counter = signal(this.restored || 0);
+  readonly counter = signal(0);
 
-  color = computed(() => {
-    console.log(this.storageKey, 'running');
-
-    return nthColor(this.counter());
-  });
+  color = computed(() => nthColor(this.counter()));
 
   increment(): void {
     this.counter.update(count => ++count);
@@ -36,9 +29,17 @@ export class CounterComponent {
     this.counter.set(0);
   }
 
-  readonly persist = effect(() => {
-    console.log('persisting', this.storageKey);
+  readonly restore = effect(
+    () => {
+      const restored = parseInt(sessionStorage.getItem(this.storageKey()) ?? '');
+      this.counter.set(restored || 0);
+    },
+    { allowSignalWrites: true },
+  );
 
-    sessionStorage.setItem(this.storageKey, `${this.counter()}`);
+  readonly persist = effect(() => {
+    console.log('persisting', untracked(this.storageKey));
+
+    sessionStorage.setItem(untracked(this.storageKey), `${this.counter()}`);
   });
 }
