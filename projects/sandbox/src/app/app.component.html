@@ -1,4 +1,3 @@
-<app-counter [storageKey]="key()"></app-counter>
-<app-counter storageKey="counter-2"></app-counter>
-<app-counter storageKey="counter-3"></app-counter>
-<button (click)="toggleKey()">Toggle Key: {{ key() }}</button>
+<app-counter [(counter)]="counter1"></app-counter>
+<app-counter [(counter)]="counter2"></app-counter>
+<app-counter [(counter)]="counter3"></app-counter>
