@@ -1,3 +1,5 @@
 <app-counter [(counter)]="counter1"></app-counter>
 <app-counter [(counter)]="counter2"></app-counter>
 <app-counter [(counter)]="counter3"></app-counter>
+
+<input type="checkbox" #checkbox (change)="managePersist(checkbox.checked)" />
