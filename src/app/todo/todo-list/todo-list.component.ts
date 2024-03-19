@@ -22,8 +22,7 @@ export class TodoListComponent {
   readonly columns = ['done', 'content'];
 
   title = this.todoListStore.title;
-  items = this.todoListStore.sorted;
-  sortBy = this.todoListStore.sortBy;
+  items = this.todoListStore.items;
   editing = this.todoListStore.editing;
   addDisabled = this.todoListStore.addDisabled;
 
@@ -54,9 +53,5 @@ export class TodoListComponent {
 
   cancelEdit(): void {
     this.todoListStore.editItem(undefined);
-  }
-
-  setSort(sortBy: keyof TodoListItem): void {
-    this.todoListStore.setSort(sortBy);
   }
 }
