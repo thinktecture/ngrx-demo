@@ -6,17 +6,14 @@ import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { TodoListItem } from '../todo.model';
-import { TodoListStore } from './todo-list.store';
 
 @Component({
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss'],
-  providers: [TodoListStore],
   imports: [MatButtonModule, MatButtonToggleModule, MatIconModule, MatTableModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodoListComponent {
-  private todoListStore = inject(TodoListStore);
   private route = inject(ActivatedRoute);
 
   readonly columns = ['done', 'content'];
