@@ -21,27 +21,24 @@ export function getItems(listId: string): TodoListItem[] {
   return ITEMS.filter(item => item.listId === listId).map(({ listId, ...item }) => item);
 }
 
-const lists = { entity: type<TodoListName>(), collection: 'lists' } as const;
-const items = { entity: type<TodoListItem & { listId: string }>(), collection: 'items' } as const;
-
 export const TodoService = signalStore(
   { providedIn: 'root' },
 
-  withState({}),
-
-  withEntities(lists),
-  withEntities(items),
+  withState({
+    lists: LISTS,
+    items: ITEMS,
+  }),
 
   withMethods(store => ({
     getListNames(): Observable<TodoListName[]> {
-      return of(store.listsEntities());
+      return of(store.lists());
     },
 
     getList(id: string): Observable<TodoList> {
-      const list = store.listsEntityMap()[id];
+      const list = store.lists().find(list => list.id === id);
 
       if (list) {
-        const items = store.itemsEntities().filter(item => item.listId === id);
+        const items = store.items().filter(({ listId }) => listId === id);
         return of({ ...list, items });
       }
 
@@ -50,13 +47,13 @@ export const TodoService = signalStore(
 
     addList(title: string): Observable<TodoListName> {
       const list: TodoListName = { id: `tl-${Date.now()}`, title };
-      patchState(store, addEntity(list, lists));
+      patchState(store, { lists: [...store.lists(), list] });
       return of(list);
     },
 
     addItem(listId: string, content: string): Observable<TodoListItem> {
       const item: TodoListItem = { id: `${listId}+${Date.now()}`, content, done: false };
-      patchState(store, addEntity({ ...item, listId }, items));
+      patchState(store, { items: [...store.items(), { ...item, listId }] });
       return of(item);
     },
 
@@ -68,17 +65,17 @@ export const TodoService = signalStore(
       if (changes.content === '') {
         return throwError(() => `Invalid content`);
       }
-      if (!store.listsEntityMap()[listId] || !store.itemsEntityMap()[id]) {
+
+      const list = store.lists().find(list => list.id === listId);
+      const item = store.items().find(item => item.id === id && item.listId === listId);
+      if (!list || !item) {
         return throwError(() => `Cannot locate Item`);
       }
-      patchState(store, updateEntity({ id, changes }, items));
-      return of(store.itemsEntityMap()[id]);
+
+      const updatedItem = { ...item, ...changes };
+      const items = store.items().map(item => (item.id === id ? updatedItem : item));
+      patchState(store, { items });
+      return of(updatedItem);
     },
   })),
-
-  withHooks({
-    onInit: store => {
-      patchState(store, setAllEntities(LISTS, lists), setAllEntities(ITEMS, items));
-    },
-  }),
 );
