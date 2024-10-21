@@ -22,6 +22,7 @@ const initialState: TodoListState = {
 };
 
 export const TodoListStore = signalStore(
+  { protectedState: false },
   withState(initialState),
   withEntities<TodoListItem>(),
 
