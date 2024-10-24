@@ -13,10 +13,12 @@ import { TodoListStore } from './todo-list.store';
   styleUrls: ['./todo-list.component.scss'],
   standalone: true,
   imports: [MatButtonModule, MatButtonToggleModule, MatIconModule, MatTableModule, RouterLink],
+  providers: [TodoListStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TodoListComponent {
   private route = inject(ActivatedRoute);
+  private todoListStore = inject(TodoListStore);
 
   readonly columns = ['done', 'content'];
 
