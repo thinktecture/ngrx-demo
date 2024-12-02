@@ -19,7 +19,6 @@ import { Audio } from '../audio.model';
   selector: 'app-audio-edit-form',
   templateUrl: './audio-edit-form.component.html',
   styleUrls: ['./audio-edit-form.component.scss'],
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,

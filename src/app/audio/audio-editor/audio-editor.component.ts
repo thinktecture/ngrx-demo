@@ -10,7 +10,6 @@ import { AudioEditorStore } from './audio-editor.store';
   templateUrl: './audio-editor.component.html',
   styleUrls: ['./audio-editor.component.scss'],
   providers: [AudioEditorStore],
-  standalone: true,
   imports: [MatCardModule, AudioEditFormComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

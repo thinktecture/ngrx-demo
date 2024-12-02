@@ -12,7 +12,6 @@ const nthColor = colorPicker(['#9cd08f', '#21295c', '#8b8bae', '#af125a', '#582b
 
 @Component({
   selector: 'app-counter',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './counter.component.html',
   styleUrls: ['./counter.component.scss'],

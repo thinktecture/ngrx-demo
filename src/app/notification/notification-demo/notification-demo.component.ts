@@ -21,7 +21,6 @@ let count = 0;
   templateUrl: './notification-demo.component.html',
   styleUrls: ['./notification-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule],
 })
 export class NotificationDemoComponent {

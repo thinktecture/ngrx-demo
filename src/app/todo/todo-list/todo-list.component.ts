@@ -11,7 +11,6 @@ import { TodoListStore } from './todo-list.store';
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.scss'],
   providers: [TodoListStore],
-  standalone: true,
   imports: [MatTableModule, MatIconModule, MatButtonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

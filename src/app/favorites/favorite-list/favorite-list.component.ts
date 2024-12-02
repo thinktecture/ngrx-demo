@@ -14,7 +14,6 @@ const selectFavorites = createSelector(selectAudioFavoriteItems, items => {
   selector: 'app-favorite-list',
   templateUrl: './favorite-list.component.html',
   styleUrls: ['./favorite-list.component.scss'],
-  standalone: true,
   imports: [MatListModule, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

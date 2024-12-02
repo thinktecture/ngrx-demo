@@ -14,7 +14,6 @@ import { selectUnseenNotificationsCount } from './notification/state/notificatio
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatToolbarModule,
     MatButtonModule,

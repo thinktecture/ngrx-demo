@@ -13,7 +13,6 @@ import { AudioListStore } from './audio-list.store';
   templateUrl: './audio-list.component.html',
   styleUrls: ['./audio-list.component.scss'],
   providers: [AudioListStore],
-  standalone: true,
   imports: [MatTableModule, MatButtonModule, MatIconModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

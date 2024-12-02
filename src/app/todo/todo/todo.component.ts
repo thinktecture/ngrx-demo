@@ -8,7 +8,6 @@ import { TodoService } from '../todo.service';
 @Component({
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.scss'],
-  standalone: true,
   imports: [MatCardModule, MatListModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

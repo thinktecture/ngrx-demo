@@ -12,7 +12,6 @@ import {
   selector: 'app-notifications',
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
-  standalone: true,
   imports: [MatListModule, MatButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
